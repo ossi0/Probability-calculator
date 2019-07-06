@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<body>
+	<form action="">
+			  K: <input id="k" type="number" name="vaihtoehto" value="6"><br><br>
+			  N: <input id="n" type="number" name="toisto" value="6"><br><br>
+	<button type="button" onclick="calc()">Laske!</button>
+	<br>
+	<br>
+	<div id="prob">Todennäköisyys on:</div>
+		<style>
+			body {
+				position: relative;
+				text-align: center;
+				top: 100px;
+				background-color: #c4edaf;
+				font-size: 22px;
+			}
+			
+			#prob {
+				position: absolute;
+				font-size: 24px;
+				margin: 20px;
+			}
+			
+			button {
+				position: relative;
+				background-color: #72d8ac;
+				font-size: 20px;
+				padding: 14px 38px;
+				top: 82px;
+				left: 20px;
+			}
+			
+			#k {
+				margin: 10px;
+				border: 3px solid #484c51;
+			}
+
+			#n {
+				position: relative;
+				margin: 10px;
+				border: 3px solid #484c51;
+			}			
+		</style>
+		
+			<script>
+			// KOODIA VOI SIEVENTÄÄ RUTKAASTI
+			
+				var n = document.getElementById("n").value; // toistojen määrä
+				var k = document.getElementById("k").value; // lukujen määrä ( amount of unique outcomes)
+				var addholder = 0; // tässä pidetään sarjakehitelmän summaa
+				var subholder = 0;
+				var kdec = 1; // tämä kertoo monesko iteraatio on meneillään
+				var prob = 0; // itse todennäköisyys
+				var sarjasumma = 0;
+				var sarjaerotus = 0;
+				var summa = 0;
+				var kanta = 0;
+				var total = 0;
+				var kantasum = 0;
+				var kantaero = 0;
+				
+				function factorialize(num) {		// factorial funktio
+					for (var i=(num-1); i>=1; i--) {
+						num *= i;
+					}
+					return num;
+				}
+				
+				function calc() {
+					n = document.getElementById("n").value;
+					k = document.getElementById("k").value;
+					addholder = 0;
+					subholder = 0;
+					sarjasumma = 0;
+					sarjaerotus = 0;
+					summa = 0;
+					kanta = 0;
+					total = 0;
+					kdec = 1;
+					prob = 0;
+					kantasum = 0;
+					kantaero = 0;
+					
+					
+					add();
+				}
+				
+				function add() {			// sarjakehitelmän yhteenlasku
+				
+				
+					for (var i=1; i < k; i++) {
+						if (i == 1) {
+							addholder = (sum(k) + log((k-i),n)) - (sum(i) + sum(k-i));
+							summa+= addholder;
+						} else {
+							addholder = (sum(k) + log((k-i),n)) - (sum(i) + sum(k-i));
+							kantasum = log((1-(Math.pow(10,(addholder-summa)))),1);	// Katso ideavihkosesta selvennykseksi
+							summa += kantasum;
+							i++;
+							
+							addholder = (sum(k) + log((k-i),n)) - (sum(i) + sum(k-i));
+							kantasum = log((1+(Math.pow(10,(addholder-summa)))),1);
+							summa += kantasum;
+						}
+					}
+					even();
+				}
+
+					
+					
+				function even() {
+					total = log(k,n);
+					prob = (1-Math.pow(10,(summa-total))).toFixed(5);
+			
+					end();
+				}
+				
+				function end() {		// lopetus
+					document.getElementById("prob").textContent = "Todennäköisyys on: " + prob;
+				}
+				
+				
+				function log(num,exp) {		// esim  (10)^50000
+					return (exp*Math.log10(num));
+				}
+				
+				function sum(num) {		// esim (10)^2400
+					var x = 0;						// factorial to the power of ten
+					for (i=1; i <= num; i++) {
+						x += Math.log10(i);
+					}
+					return x;
+				}
+				
+				function powerkanta(num,powto) {		// esim 6.65^15
+					var x = (Math.pow(10,(num/powto)));
+					return x;
+				}
+				
+				function powerten(num,pow) { // esim 10^20
+					return (pow*Math.log10(num));
+				}
+				
+			</script>
+		</body>
+		
+</head>
